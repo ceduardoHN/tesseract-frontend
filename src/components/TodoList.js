@@ -1,20 +1,80 @@
-import React, { useState } from "react";
+import React, {useState,useEffect} from "react";
 import TodoForm from "./TodoForm";
 import Todo from "./Todo";
-import { useEffect } from "react";
 
 function TodoList() {
   const [todos, setTodos] = useState([]);
 
+  const GET=async()=>{
+    const respuesta=await fetch("http://localhost:3000/v1/to-dos");
+    const respuestaJson=await respuesta.json();
+    console.log(respuestaJson);
+    setTodos(respuestaJson.todos);
+  };
+
+  const POST=async(todo)=>{
+    const respuesta=await fetch("http://localhost:3000/v1/to-do",{
+      method:"POST",
+      body:JSON.stringify(todo),
+      headers:{
+        "Content-Type":"application/json"
+      }
+    });
+    const respuestaJson=await respuesta.json();
+    console.log(respuestaJson);
+  };
+
+  const DELETE=async(id)=>{
+    const respuesta=await fetch(`http://localhost:3000/v1/to-do/${id}`,{
+      method:"DELETE"
+    });
+    const respuestaJson=await respuesta.json();
+    console.log(respuestaJson);
+  };
+
+  const UPDATE=async(todoId,newValue)=>{
+    const todo={
+      id:todoId,
+      text:newValue.text,
+      description:newValue.description,
+      is_done:newValue.is_done
+    };
+    console.log(`todo.id --> ${todo.id} `);
+    console.log(`todo.text --> ${todo.text} `);
+    console.log(`todo.description --> ${todo.description} `);
+    console.log(`todo.isDone --> ${todo.isDone} `);
+    const respuesta=await fetch(`http://localhost:3000/v1/to-do/${todoId}`,{
+      method:"PUT",
+      body:JSON.stringify(todo),
+      headers:{
+        "Content-Type":"application/json"
+      }
+    });
+    const respuestaJson=await respuesta.json();
+    console.log(respuestaJson);
+  }
+
+  const getToDos=async()=>{
+    const respuesta=await fetch("http://localhost:3000/v1/to-dos");
+    const respuestaJson=await respuesta.json();
+    setTodos(respuestaJson.todos);
+  }
+
   useEffect(() => {
     console.log(todos);
   }, [todos]);
+
+  useEffect(() => {
+    GET();
+  }, []);
 
   const addTodo = (todo) => {
     if (!todo.text || /^\s*$/.test(todo.text)) {
       return;
     }
 
+    POST(todo);
+    //const respuestaJson=await respuesta.json();
     const newTodos = [todo, ...todos];
 
     setTodos(newTodos);
@@ -35,14 +95,17 @@ function TodoList() {
     if (!newValue.text || /^\s*$/.test(newValue.text)) {
       return;
     }
+    
+    UPDATE(todoId,newValue);
 
     setTodos((prev) =>
       prev.map((item) => (item.id === todoId ? newValue : item))
     );
   };
 
-  const removeTodo = (id) => {
+  const removeTodo = async(id) => {
     const removedArr = [...todos].filter((todo) => todo.id !== id);
+    DELETE(id);
 
     setTodos(removedArr);
   };
@@ -50,7 +113,7 @@ function TodoList() {
   const completeTodo = (id) => {
     let updatedTodos = todos.map((todo) => {
       if (todo.id === id) {
-        todo.isDone = !todo.isDone;
+        todo.is_done = !todo.is_done;
       }
       return todo;
     });
