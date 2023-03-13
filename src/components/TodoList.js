@@ -8,7 +8,6 @@ function TodoList() {
   const GET=async()=>{
     const respuesta=await fetch("http://localhost:3000/v1/to-dos");
     const respuestaJson=await respuesta.json();
-    console.log(respuestaJson);
     setTodos(respuestaJson.todos);
   };
 
@@ -21,7 +20,6 @@ function TodoList() {
       }
     });
     const respuestaJson=await respuesta.json();
-    console.log(respuestaJson);
   };
 
   const DELETE=async(id)=>{
@@ -29,7 +27,6 @@ function TodoList() {
       method:"DELETE"
     });
     const respuestaJson=await respuesta.json();
-    console.log(respuestaJson);
   };
 
   const UPDATE=async(todoId,newValue)=>{
@@ -39,10 +36,6 @@ function TodoList() {
       description:newValue.description,
       is_done:newValue.is_done
     };
-    console.log(`todo.id --> ${todo.id} `);
-    console.log(`todo.text --> ${todo.text} `);
-    console.log(`todo.description --> ${todo.description} `);
-    console.log(`todo.isDone --> ${todo.isDone} `);
     const respuesta=await fetch(`http://localhost:3000/v1/to-do/${todoId}`,{
       method:"PUT",
       body:JSON.stringify(todo),
@@ -51,13 +44,12 @@ function TodoList() {
       }
     });
     const respuestaJson=await respuesta.json();
-    console.log(respuestaJson);
   }
 
   const getToDos=async()=>{
     const respuesta=await fetch("http://localhost:3000/v1/to-dos");
     const respuestaJson=await respuesta.json();
-    setTodos(respuestaJson.todos);
+    setTodos(respuestaJson);
   }
 
   useEffect(() => {
@@ -113,7 +105,7 @@ function TodoList() {
   const completeTodo = (id) => {
     let updatedTodos = todos.map((todo) => {
       if (todo.id === id) {
-        todo.is_done = !todo.is_done;
+        todo.isDone = !todo.isDone;
       }
       return todo;
     });
