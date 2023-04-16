@@ -14,6 +14,7 @@ function TodoList() {
   const POST=async(todo)=>{
     const respuesta=await fetch("http://localhost:3000/v1/to-do",{
       method:"POST",
+      title:todo.text,
       body:JSON.stringify(todo),
       headers:{
         "Content-Type":"application/json"
@@ -46,11 +47,11 @@ function TodoList() {
     const respuestaJson=await respuesta.json();
   }
 
-  const getToDos=async()=>{
-    const respuesta=await fetch("http://localhost:3000/v1/to-dos");
-    const respuestaJson=await respuesta.json();
-    setTodos(respuestaJson);
-  }
+  // const getToDos=async()=>{
+  //   const respuesta=await fetch("http://localhost:3000/v1/to-dos");
+  //   const respuestaJson=await respuesta.json();
+  //   setTodos(respuestaJson);
+  // }
 
   useEffect(() => {
     console.log(todos);
@@ -68,9 +69,8 @@ function TodoList() {
     POST(todo);
     //const respuestaJson=await respuesta.json();
     const newTodos = [todo, ...todos];
-
     setTodos(newTodos);
-    console.log(...todos);
+    //console.log(...todos);
   };
 
   const showDescription = (todoId) => {
