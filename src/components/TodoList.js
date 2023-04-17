@@ -67,10 +67,8 @@ function TodoList() {
     }
 
     POST(todo);
-    //const respuestaJson=await respuesta.json();
     const newTodos = [todo, ...todos];
     setTodos(newTodos);
-    //console.log(...todos);
   };
 
   const showDescription = (todoId) => {
